@@ -10,6 +10,16 @@ from host import MAX_BYTES, EXTENSION_ID, read_frame, write_frame
 
 
 class HostTests(unittest.TestCase):
+    def test_handles_partial_writes(self):
+        class Slow(io.BytesIO):
+            def write(self, data):
+                return super().write(data[:7])
+        stream = Slow()
+        value = {"text": "日本語" * 10000}
+        write_frame(stream, value)
+        stream.seek(0)
+        self.assertEqual(read_frame(stream), value)
+
     def test_store_key_matches_native_origin(self):
         manifest = json.loads((Path(__file__).resolve().parents[1] / "extension/manifest.json").read_text())
         digest = hashlib.sha256(base64.b64decode(manifest["key"])).hexdigest()[:32]

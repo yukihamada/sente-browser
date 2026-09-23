@@ -49,7 +49,12 @@ def write_frame(stream, value):
     data = json.dumps(value, ensure_ascii=False).encode("utf-8")
     if len(data) > MAX_BYTES:
         raise ValueError("frame_too_large")
-    stream.write(struct.pack("<I", len(data)) + data)
+    frame = memoryview(struct.pack("<I", len(data)) + data)
+    while frame:
+        written = stream.write(frame)
+        if written is None or written <= 0:
+            raise EOFError("incomplete_write")
+        frame = frame[written:]
     stream.flush()
 
 

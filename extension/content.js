@@ -1,8 +1,12 @@
 (() => {
-  if (globalThis.__senteBrowserInstalled) return;
-  globalThis.__senteBrowserInstalled = true;
+  if (globalThis.__senteBrowserInstalled) {
+    globalThis.__senteBrowserInstalled.reset();
+    return;
+  }
   let snapshot = "";
   let refs = new Map();
+  globalThis.__senteBrowserInstalled = {reset: () => { snapshot = ""; refs.clear(); }};
+  const disabled = (el) => el.matches(":disabled") || el.getAttribute("aria-disabled") === "true";
   const visible = (el) => el.isConnected && el.getClientRects().length > 0 &&
     getComputedStyle(el).visibility !== "hidden" && !el.closest("[inert], [aria-hidden='true']");
   const label = (el) => (el.getAttribute("aria-label") ||
@@ -15,7 +19,7 @@
       if (!visible(el) || elements.length >= 300) continue;
       const ref = `e${elements.length + 1}`;
       refs.set(ref, {el, label: label(el), href: el.getAttribute("href"), type: el.getAttribute("type")});
-      elements.push({ref, tag: el.tagName.toLowerCase(), role: el.getAttribute("role"), type: el.getAttribute("type"), label: label(el), disabled: Boolean(el.disabled)});
+      elements.push({ref, tag: el.tagName.toLowerCase(), role: el.getAttribute("role"), type: el.getAttribute("type"), label: label(el), disabled: disabled(el)});
     }
     return {untrusted: true, snapshot, url: location.href, title: document.title,
       text: (document.body?.innerText || "").slice(0, 30000), elements};
@@ -31,22 +35,26 @@
     }
     const saved = refs.get(message.ref);
     const el = saved?.el;
-    if (!el || !visible(el) || el.disabled || el.getAttribute("aria-disabled") === "true") throw new Error("element_unavailable");
+    if (!el || !visible(el) || disabled(el)) throw new Error("element_unavailable");
     if (label(el) !== saved.label || el.getAttribute("href") !== saved.href || el.getAttribute("type") !== saved.type) throw new Error("element_changed_read_again");
     if (message.op === "click") {
       snapshot = "";
       el.click();
       return {performed: "click", readAgain: true};
     }
-    if (message.op !== "fill" || typeof message.text !== "string" || message.text.length > 10000) throw new Error("invalid_input");
+    if (message.op !== "fill" || typeof message.text !== "string" || Array.from(message.text).length > 10000) throw new Error("invalid_input");
     if (el.readOnly || !["INPUT", "TEXTAREA"].includes(el.tagName)) throw new Error("not_text_input");
     if (el.tagName === "INPUT" && !["text", "search", "email", "url", "tel"].includes(el.type)) throw new Error("unsupported_input_type");
+    if (el.maxLength >= 0 && message.text.length > el.maxLength) throw new Error("input_exceeds_maxlength");
     el.focus();
+    // Focus handlers can replace, disable or turn a field into a password input.
+    if (!visible(el) || disabled(el) || el.readOnly || label(el) !== saved.label || el.getAttribute("type") !== saved.type) throw new Error("element_changed_read_again");
+    if (el.maxLength >= 0 && message.text.length > el.maxLength) throw new Error("input_exceeds_maxlength");
+    snapshot = "";
     const proto = el.tagName === "TEXTAREA" ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
     Object.getOwnPropertyDescriptor(proto, "value").set.call(el, message.text);
     el.dispatchEvent(new Event("input", {bubbles: true}));
     el.dispatchEvent(new Event("change", {bubbles: true}));
-    snapshot = "";
     return {performed: "fill", readAgain: true};
   }
   chrome.runtime.onMessage.addListener((message, sender, respond) => {
