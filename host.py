@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Chrome native messaging to a same-user Unix socket. No TCP listener."""
+"""Chrome native messaging to same-user local IPC. No TCP listener."""
 import concurrent.futures
-import fcntl
 import json
+from multiprocessing import AuthenticationError
 import os
 from pathlib import Path
 import socket
@@ -10,14 +10,11 @@ import struct
 import sys
 import threading
 import uuid
+from transport import state_dir, prepare_directory, acquire_lock, listen, stream_for
 
 MAX_BYTES = 512 * 1024
 EXTENSION_ID = "jnnfblhbdlgofcadhgaicafimchnbdnl"
 ALLOWED_EXTENSION_IDS = (EXTENSION_ID, "ndpogcpncelkickingfpfdbajchdbnim")
-
-
-def state_dir():
-    return Path(os.environ.get("SENTE_BROWSER_STATE", str(Path.home() / ".local/share/sente-browser")))
 
 
 def read_exact(stream, count):
@@ -62,22 +59,17 @@ def main():
     if len(sys.argv) < 2 or sys.argv[1] not in {"chrome-extension://" + ident + "/" for ident in ALLOWED_EXTENSION_IDS}:
         raise SystemExit("extension_origin_required")
     os.umask(0o077)
+    if sys.platform == "win32":
+        import msvcrt
+        for stream in (sys.stdin, sys.stdout):
+            msvcrt.setmode(stream.fileno(), os.O_BINARY)
     directory = state_dir()
-    directory.mkdir(parents=True, exist_ok=True, mode=0o700)
-    if directory.is_symlink() or directory.stat().st_uid != os.getuid():
-        raise SystemExit("unsafe_state_directory")
-    directory.chmod(0o700)
-    lock = (directory / "host.lock").open("a")
+    prepare_directory(directory)
     try:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
-        raise SystemExit("another_browser_connected")
-    path = directory / "bridge.sock"
-    path.unlink(missing_ok=True)
-    server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    server.bind(str(path))
-    os.chmod(path, 0o600)
-    server.listen(8)
+        lock = acquire_lock(directory)
+    except RuntimeError as error:
+        raise SystemExit(str(error))
+    server = listen(directory)
     write_lock = threading.Lock()
     pending_lock = threading.Lock()
     pending = {}
@@ -90,8 +82,7 @@ def main():
     def client(connection):
         try:
             with connection:
-                connection.settimeout(25)
-                stream = connection.makefile("rwb", buffering=0)
+                stream = stream_for(connection)
                 request = read_frame(stream)
                 if not isinstance(request, dict) or request.get("op") not in {"tabs", "read", "fill", "click", "scroll"}:
                     write_frame(stream, {"ok": False, "error": "unsupported_operation"})
@@ -117,7 +108,10 @@ def main():
     def accept():
         while True:
             try:
-                connection, _ = server.accept()
+                accepted = server.accept()
+                connection = accepted if sys.platform == "win32" else accepted[0]
+            except AuthenticationError:
+                continue  # A rejected local peer must not stop future valid connections.
             except OSError:
                 return
             if slots.acquire(blocking=False):
@@ -140,7 +134,8 @@ def main():
                     future.set_result(value)
     finally:
         server.close()
-        path.unlink(missing_ok=True)
+        (directory / ("pipe.key" if sys.platform == "win32" else "bridge.sock")).unlink(missing_ok=True)
+        lock.close()
 
 
 if __name__ == "__main__":

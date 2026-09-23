@@ -35,7 +35,7 @@ class Fixture(BaseHTTPRequestHandler):
 
 def cli(*args, text=None, ok=True):
     process = subprocess.run([sys.executable, str(ROOT / "cli.py"), *map(str, args)],
-                             input=text, text=True, capture_output=True, timeout=30)
+                             input=text, text=True, encoding="utf-8", capture_output=True, timeout=30)
     value = json.loads(process.stdout or process.stderr)
     assert value.get("ok") is ok, value
     return value.get("result") if ok else value
@@ -44,7 +44,7 @@ def cli(*args, text=None, ok=True):
 def main():
     server = ThreadingHTTPServer(("127.0.0.1", 0), Fixture)
     threading.Thread(target=server.serve_forever, daemon=True).start()
-    executable = os.environ.get("CHROMIUM_PATH", str(Path.home() / "Library/Caches/ms-playwright/chromium-1243/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"))
+    executable = os.environ.get("CHROMIUM_PATH")
     with tempfile.TemporaryDirectory(prefix="sb-") as temp, sync_playwright() as playwright:
         extension = Path(temp) / "extension"
         shutil.copytree(ROOT / "extension", extension)
@@ -59,12 +59,14 @@ def main():
         profile.mkdir()
         os.environ["SENTE_BROWSER_STATE"] = str(Path(temp) / "state")
         subprocess.run([sys.executable, str(ROOT / "install.py"), "--user-data-dir", str(profile)],
-                       env={**os.environ, "HOME": temp}, check=True, capture_output=True)
-        probe = subprocess.run([str(Path(temp) / "state/native-host"), f"chrome-extension://{EXTENSION_ID}/"],
+                       env={**os.environ, "HOME": temp, "USERPROFILE": temp,
+                            "XDG_CONFIG_HOME": str(Path(temp) / ".config")}, check=True, capture_output=True)
+        launcher = "native-host.cmd" if sys.platform == "win32" else "native-host"
+        probe = subprocess.run([str(Path(temp) / "state" / launcher), f"chrome-extension://{EXTENSION_ID}/"],
                                input=b"", capture_output=True)
         assert probe.returncode == 0, probe.stderr.decode()
         context = playwright.chromium.launch_persistent_context(str(Path(temp) / "profile"),
-            executable_path=executable, headless=True, env=dict(os.environ),
+            executable_path=executable, channel="chromium", headless=True, env=dict(os.environ),
             args=[f"--disable-extensions-except={extension}", f"--load-extension={extension}"])
         try:
             worker = context.service_workers[0] if context.service_workers else context.wait_for_event("serviceworker")

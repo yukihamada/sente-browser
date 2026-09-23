@@ -5,9 +5,13 @@ import json
 import socket
 import sys
 from host import read_frame, state_dir, write_frame
+from transport import connect, stream_for
 
 
 def main():
+    if sys.platform == "win32":
+        for stream in (sys.stdin, sys.stdout, sys.stderr):
+            stream.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="op", required=True)
     commands.add_parser("tabs", help="List only shared tabs")
@@ -29,10 +33,8 @@ def main():
         if len(args["text"]) > 10000:
             parser.error("input_too_long")
     try:
-        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as connection:
-            connection.settimeout(25)
-            connection.connect(str(state_dir() / "bridge.sock"))
-            stream = connection.makefile("rwb", buffering=0)
+        with connect(state_dir()) as connection:
+            stream = stream_for(connection)
             write_frame(stream, args)
             reply = read_frame(stream)
             if not isinstance(reply, dict):
