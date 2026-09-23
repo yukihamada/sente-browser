@@ -1,0 +1,19 @@
+{
+  "name": {"message": "Sente Browser"},
+  "help": {"message": "Setup & troubleshooting"},
+  "privacy": {"message": "Privacy"},
+  "sharedTabs": {"message": "Shared tabs"},
+  "revoke": {"message": "Unshare"},
+  "description": {"message": "Let Sente read and operate the tab you share, using your current Chrome session."},
+  "heading": {"message": "Work with Sente"},
+  "intro": {"message": "Share this tab to let Sente read, fill, and click using your current login."},
+  "share": {"message": "Share this tab"},
+  "stop": {"message": "Stop sharing all tabs"},
+  "connected": {"message": "Connected to this Mac"},
+  "disconnected": {"message": "Not connected"},
+  "shared": {"message": "Sharing $1 tab(s)", "placeholders": {"count": {"content": "$1"}}},
+  "install": {"message": "Bridge unavailable. Run python3 install.py from the download. If another Chrome is connected, stop sharing there first. See Setup below for custom profiles."},
+  "unsupported": {"message": "Open an HTTP or HTTPS page first. Chrome settings and the Web Store cannot be shared."},
+  "grantFailed": {"message": "Could not share this tab. Reload the page and try again."},
+  "boundary": {"message": "Navigation ends sharing. The bridge passes requested content to local tools. Your AI client may send that content to its model provider."}
+}

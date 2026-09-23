@@ -1,0 +1,19 @@
+{
+  "name": {"message": "先手ブラウザ"},
+  "help": {"message": "導入・困ったとき"},
+  "privacy": {"message": "プライバシー"},
+  "sharedTabs": {"message": "共有中のタブ"},
+  "revoke": {"message": "解除"},
+  "description": {"message": "ログイン中のChromeで、共有したタブの確認・入力・クリックを先手に頼めます。"},
+  "heading": {"message": "このページを先手と使う"},
+  "intro": {"message": "タブを共有すると、今のログイン状態のまま先手がページの確認・入力・クリックをできます。"},
+  "share": {"message": "このタブを共有"},
+  "stop": {"message": "すべての共有を停止"},
+  "connected": {"message": "このMacに接続済み"},
+  "disconnected": {"message": "未接続"},
+  "shared": {"message": "$1個のタブを共有中", "placeholders": {"count": {"content": "$1"}}},
+  "install": {"message": "ブリッジに接続できません。配布フォルダで python3 install.py を実行してください。別のChromeが接続中なら先に共有を停止。専用プロファイルは下の導入案内をご覧ください。"},
+  "unsupported": {"message": "HTTPまたはHTTPSのページを開いてください。Chromeの設定画面やウェブストアは共有できません。"},
+  "grantFailed": {"message": "共有できませんでした。ページを再読み込みしてお試しください。"},
+  "boundary": {"message": "ページ移動で共有が終了します。要求された内容をローカルのツールへ渡します。AIクライアントは、その内容をモデル提供元へ送る場合があります。"}
+}

@@ -1,0 +1,20 @@
+:root { color-scheme: light dark; font: 14px/1.65 -apple-system, BlinkMacSystemFont, sans-serif; }
+body { width: 328px; margin: 0; padding: 24px; background: light-dark(#fafaf8, #181a19); color: light-dark(#222b28, #edf2ee); }
+header { display: flex; gap: 12px; align-items: center; }
+.mark { background: #c8f2a4; color: #233025; border-radius: 12px; font-size: 28px; padding: 0 12px; }
+h1 { font-size: 17px; margin: 0; letter-spacing: -.02em; }
+p { margin: 14px 0; }
+#status { font-weight: 650; }
+#count, footer { opacity: .72; font-size: 12px; }
+button { display: block; width: 100%; margin: 10px 0; padding: 12px; border: 0; border-radius: 10px; background: #c8f2a4; color: #233025; cursor: pointer; font: inherit; font-weight: 650; }
+button.secondary { background: light-dark(#e9ece6, #303730); color: inherit; }
+button:disabled { opacity: .5; cursor: wait; }
+button:focus-visible { outline: 3px solid #65a535; outline-offset: 3px; }
+#error { color: light-dark(#a52525, #ffabab); }
+footer { margin-top: 20px; }
+nav { margin-top: 16px; font-size: 12px; }
+a { color: inherit; text-underline-offset: 3px; }
+#tabs { padding: 0; list-style: none; max-height: 180px; overflow: auto; }
+#tabs li { display: flex; gap: 12px; align-items: center; border-top: 1px solid #80808030; }
+#tabs span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+button.revoke { width: auto; font-size: 12px; padding: 5px 9px; background: transparent; color: inherit; border: 1px solid #80808060; }
