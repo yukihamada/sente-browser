@@ -41,7 +41,7 @@ def main():
         # cmd expands percent even inside quotes; escape literal path characters.
         python = sys.executable.replace("%", "%%")
         script = str(directory / "host.py").replace("%", "%%")
-        launcher.write_text(f'@echo off\nsetlocal DisableDelayedExpansion\n"{python}" "{script}" %*\n', encoding="utf-8")
+        launcher.write_text(f'@echo off\nchcp 65001 >nul\nsetlocal DisableDelayedExpansion\n"{python}" "{script}" %*\n', encoding="utf-8")
     else:
         launcher.write_text("#!/bin/sh\nexec " + shlex.quote(sys.executable) + " " + shlex.quote(str(directory / "host.py")) + ' "$@"\n')
     launcher.chmod(0o700)

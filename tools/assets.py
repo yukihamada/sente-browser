@@ -25,7 +25,7 @@ def main():
     for name, paths, base in [
         (f"sente-browser-store-{version}.zip", extension_files, ROOT / "extension"),
         (f"sente-browser-extension-{version}.zip", extension_files, ROOT / "extension"),
-        (f"sente-browser-macos-{version}.zip", extension_files + [ROOT / p for p in ("host.py", "cli.py", "install.py", "README.md", "PRIVACY.md", "LICENSE")], ROOT),
+        (f"sente-browser-desktop-{version}.zip", extension_files + [ROOT / p for p in ("host.py", "cli.py", "transport.py", "install.py", "README.md", "PRIVACY.md", "LICENSE")], ROOT),
     ]:
         with zipfile.ZipFile(dist / name, "w", zipfile.ZIP_DEFLATED) as archive:
             for path in paths:

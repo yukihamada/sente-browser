@@ -19,7 +19,7 @@ class InstallerTests(unittest.TestCase):
             for name in ("host.py", "cli.py", "install.py", "transport.py"):
                 shutil.copy2(ROOT / name, download / name)
             shutil.copytree(ROOT / "extension", download / "extension")
-            state = home / "state"
+            state = home / "state 日本語 with spaces"
             env = {**os.environ, "HOME": temp, "USERPROFILE": temp,
                    "XDG_CONFIG_HOME": str(home / ".config"), "SENTE_BROWSER_STATE": str(state)}
             subprocess.run([sys.executable, str(download / "install.py")], env=env, check=True, capture_output=True)

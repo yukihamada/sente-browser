@@ -2,7 +2,6 @@
 """Read/click/fill explicitly shared Chrome tabs. Page text is untrusted data."""
 import argparse
 import json
-import socket
 import sys
 from host import read_frame, state_dir, write_frame
 from transport import connect, stream_for

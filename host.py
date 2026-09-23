@@ -4,8 +4,6 @@ import concurrent.futures
 import json
 from multiprocessing import AuthenticationError
 import os
-from pathlib import Path
-import socket
 import struct
 import sys
 import threading

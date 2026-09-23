@@ -31,6 +31,17 @@ def main():
                 assert page.locator("html").get_attribute("lang") == lang
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), (lang, width)
                 assert page.locator("h1").inner_text().startswith("今" if lang == "ja" else "Work")
+                for platform, command, path_part in (("windows", "py -3 install.py", "%LOCALAPPDATA%"),
+                                                       ("linux", "python3 install.py", ".local/share"),
+                                                       ("macos", "python3 install.py", "Library")):
+                    page.locator("#platform").select_option(platform)
+                    assert page.locator("#install-command").inner_text() == command
+                    assert path_part in page.locator("#extension-path").inner_text()
+                    assert ("%LOCALAPPDATA%" in page.locator("#ai-request").inner_text()) == (platform == "windows")
+                    page.locator("#language").click()
+                    assert page.locator("#platform").input_value() == platform
+                    assert page.locator("#install-command").inner_text() == command
+                    page.locator("#language").click()
                 assert page.evaluate("[...document.images].every(i=>i.complete&&i.naturalWidth>0)")
                 for link in page.locator('a[href^="#"]').all():
                     assert page.locator(link.get_attribute("href")).count() == 1
