@@ -75,6 +75,10 @@ tabsで共有タブを確認し、readで最新snapshot/refを取得してくだ
 
 ## 困ったとき / Troubleshooting
 
+拡張の「ひとこと送る・不具合を報告」、または [フィードバック](https://teai.io/browser-feedback?lang=ja) から、メールと短いメモで送れます。ページ内容・URL・ログは自動添付しません。運営が改善への貢献を確認後、報告者が紐付けたteaiアカウントにAI利用クレジットを付与できます。投稿のみでの自動付与ではありません。
+
+Use **Share feedback / report a bug** in the extension, or [the form](https://teai.io/browser-feedback?lang=en). No GitHub account needed. Save your private report link for replies and follow-up. Helpful contributions can receive teai AI credits after team review; link the teai account with the same email to receive them. Reports never attach page contents, URLs or logs automatically.
+
 - **0.2.1への更新**: ストア発行IDに対応するためブリッジを更新してください。新インストーラーは旧0.2.0拡張のIDも許可します。ストア版の公開は審査によります。
 
 - **接続できない / Bridge unavailable**: `python3 install.py` を再実行。別Chromeが接続中ならそこで停止。拡張ポップアップを開き直す。

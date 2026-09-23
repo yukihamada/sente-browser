@@ -34,6 +34,11 @@ platform.addEventListener('change', setPlatform);
 function setLanguage(lang) {
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-ja][data-en]').forEach(el => { el.innerHTML = el.dataset[lang]; });
+  // Keep existing versioned setup and release links aligned with the current package.
+  document.querySelectorAll('a[href*="/sente-browser/releases/"]').forEach(el => {
+    el.href = el.href.replaceAll('0.3.0', '0.3.1');
+    if (el.classList.contains('download')) el.textContent = lang === 'ja' ? 'v0.3.1をダウンロード · 3 OS共通ZIP' : 'Download v0.3.1 · ZIP for all 3 OSes';
+  });
   document.title = lang === 'ja' ? '先手ブラウザ — 今開いているページから、一緒に。' : 'Sente Browser — Work from the tab you already have open.';
   button.textContent = lang === 'ja' ? 'EN' : '日本語';
   button.setAttribute('aria-label', lang === 'ja' ? 'Read in English' : '日本語で読む');

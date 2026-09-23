@@ -1,6 +1,8 @@
 {
   "name": {"message": "Sente Browser"},
   "help": {"message": "Setup & troubleshooting"},
+  "feedback": {"message": "Share feedback / report a bug"},
+  "feedbackNote": {"message": "Helpful contributions can receive teai AI credits after review. Page content is never attached automatically."},
   "privacy": {"message": "Privacy"},
   "sharedTabs": {"message": "Shared tabs"},
   "revoke": {"message": "Unshare"},
@@ -9,10 +11,10 @@
   "intro": {"message": "Share this tab to let Sente read, fill, and click using your current login."},
   "share": {"message": "Share this tab"},
   "stop": {"message": "Stop sharing all tabs"},
-  "connected": {"message": "Connected to this Mac"},
+  "connected": {"message": "Connected to this computer"},
   "disconnected": {"message": "Not connected"},
   "shared": {"message": "Sharing $1 tab(s)", "placeholders": {"count": {"content": "$1"}}},
-  "install": {"message": "Bridge unavailable. Run python3 install.py from the download. If another Chrome is connected, stop sharing there first. See Setup below for custom profiles."},
+  "install": {"message": "Bridge unavailable. Run python3 install.py (Windows: py -3 install.py) from the download. If another Chrome is connected, stop sharing there first. See Setup below."},
   "unsupported": {"message": "Open an HTTP or HTTPS page first. Chrome settings and the Web Store cannot be shared."},
   "grantFailed": {"message": "Could not share this tab. Reload the page and try again."},
   "boundary": {"message": "Navigation ends sharing. The bridge passes requested content to local tools. Your AI client may send that content to its model provider."}

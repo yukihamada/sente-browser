@@ -76,6 +76,13 @@ def main():
             page.goto(f"http://127.0.0.1:{server.server_port}/")
             popup = context.new_page()
             popup.goto(f"chrome-extension://{EXTENSION_ID}/popup.html")
+            feedback = popup.locator("#feedback")
+            assert feedback.is_visible()
+            from urllib.parse import urlparse, parse_qs
+            feedback_url = urlparse(feedback.get_attribute("href"))
+            assert feedback_url.netloc == "teai.io" and feedback_url.path == "/browser-feedback"
+            assert set(parse_qs(feedback_url.query)) == {"lang", "version"}
+            assert parse_qs(feedback_url.query)["version"] == [manifest["version"]]
             fixture_tabs = worker.evaluate("async () => (await chrome.tabs.query({})).filter(t=>t.url?.startsWith('http://127.0.0.1'))")
             tab_id = fixture_tabs[0]["id"]
             # Grant using the exact popup -> worker -> injection -> native host path.

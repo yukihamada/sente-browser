@@ -2,6 +2,10 @@ const msg = (key, args) => chrome.i18n.getMessage(key, args);
 document.documentElement.lang = chrome.i18n.getUILanguage();
 document.title = msg("name");
 for (const el of document.querySelectorAll("[data-i18n]")) el.textContent = msg(el.dataset.i18n);
+const feedbackURL = new URL('https://teai.io/browser-feedback');
+feedbackURL.searchParams.set('lang', chrome.i18n.getUILanguage().startsWith('ja') ? 'ja' : 'en');
+feedbackURL.searchParams.set('version', chrome.runtime.getManifest().version);
+document.querySelector('#feedback').href = feedbackURL.href;
 async function refresh() {
   const state = await chrome.runtime.sendMessage({type: "status"});
   document.querySelector("#status").textContent = msg(state.connected ? "connected" : "disconnected");

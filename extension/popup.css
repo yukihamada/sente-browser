@@ -14,6 +14,8 @@ button:focus-visible { outline: 3px solid #65a535; outline-offset: 3px; }
 footer { margin-top: 20px; }
 nav { margin-top: 16px; font-size: 12px; }
 a { color: inherit; text-underline-offset: 3px; }
+.feedback { display: block; padding: 12px; min-height: 44px; border: 1px solid #80808060; border-radius: 10px; text-align: center; }
+.feedback-note { font-size: 12px; opacity: .8; }
 #tabs { padding: 0; list-style: none; max-height: 180px; overflow: auto; }
 #tabs li { display: flex; gap: 12px; align-items: center; border-top: 1px solid #80808030; }
 #tabs span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
