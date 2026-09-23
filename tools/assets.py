@@ -23,6 +23,7 @@ def main():
     version = json.loads((ROOT / "extension/manifest.json").read_text())["version"]
     extension_files = sorted(p for p in (ROOT / "extension").rglob("*") if p.is_file() and p.suffix in {".json", ".js", ".html", ".css", ".png"})
     for name, paths, base in [
+        (f"sente-browser-store-{version}.zip", extension_files, ROOT / "extension"),
         (f"sente-browser-extension-{version}.zip", extension_files, ROOT / "extension"),
         (f"sente-browser-macos-{version}.zip", extension_files + [ROOT / p for p in ("host.py", "cli.py", "install.py", "README.md", "PRIVACY.md", "LICENSE")], ROOT),
     ]:
@@ -31,7 +32,12 @@ def main():
                 info = zipfile.ZipInfo(str(path.relative_to(base)), date_time=(2026, 9, 23, 0, 0, 0))
                 info.external_attr = 0o644 << 16
                 info.compress_type = zipfile.ZIP_DEFLATED
-                archive.writestr(info, path.read_bytes())
+                data = path.read_bytes()
+                if "-store-" in name and path.name == "manifest.json":
+                    manifest = json.loads(data)
+                    manifest.pop("key", None)
+                    data = json.dumps(manifest, ensure_ascii=False, indent=2).encode()
+                archive.writestr(info, data)
         print(name, (dist / name).stat().st_size)
     checksums = "".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n" for p in sorted(dist.glob("*.zip")))
     (dist / "SHA256SUMS.txt").write_text(checksums)

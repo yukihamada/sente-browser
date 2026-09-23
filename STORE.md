@@ -1,6 +1,8 @@
 # Chrome Web Store submission — prepared, not submitted
 
-Version: 0.2.0 · Package: `dist/sente-browser-extension-0.2.0.zip`
+Version: 0.2.1 · Package: `dist/sente-browser-store-0.2.1.zip`
+Store item ID: `jnnfblhbdlgofcadhgaicafimchnbdnl`
+Publisher: 株式会社イネブラ（Enabler Inc.）. Identity and contact email verified.
 Category: Workflow & Planning · Languages: English, Japanese
 Website: https://yukihamada.github.io/sente-browser/
 Privacy: https://yukihamada.github.io/sente-browser/privacy.html

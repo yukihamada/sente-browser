@@ -1,14 +1,17 @@
 # Sente Browser privacy / プライバシー
 
-Updated: 2026-09-23 · Publisher: Yuki Hamada · Contact: mail@yukihamada.jp
+Updated: 2026-09-23 · Publisher: Enabler Inc. (株式会社イネブラ) · Contact: mail@yukihamada.jp
 
 ## English
 
-Sente Browser 0.2.0 is an open-source Chrome extension with a local macOS bridge.
+Sente Browser 0.2.x is an open-source Chrome extension with a local macOS bridge.
 When you explicitly share an HTTP(S) tab, local tools running as your OS user can
 request its visible text, title, URL and interactive-element labels and issue
 supported actions. Reading the page can include personal or confidential content
 visible on that page. Password field values are not included in snapshots.
+Depending on the shared page, content can include personal identifiers, health,
+financial information, visible authentication information, communications or
+location information. Shared-tab URLs and titles are also passed to the client.
 
 The extension and bridge do not send page content to a server, collect analytics,
 read Chrome cookies, or store browsing history. Native-host registration and
@@ -32,7 +35,7 @@ This does not erase records kept by your AI client.
 
 ## 日本語
 
-先手ブラウザ0.2.0は、Chrome拡張とmacOS用ローカルブリッジです。明示的に共有した
+先手ブラウザ0.2.xは、Chrome拡張とmacOS用ローカルブリッジです。明示的に共有した
 HTTP(S)タブに対し、同じOSユーザーで動くツールが、表示テキスト・タイトル・URL・
 操作要素のラベルを読み取り、対応する操作を実行できます。ページに表示された個人情報や
 機密情報も読取内容に含まれ得ます。パスワード欄の値はスナップショットに含めません。

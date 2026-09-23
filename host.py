@@ -12,7 +12,8 @@ import threading
 import uuid
 
 MAX_BYTES = 512 * 1024
-EXTENSION_ID = "ndpogcpncelkickingfpfdbajchdbnim"
+EXTENSION_ID = "jnnfblhbdlgofcadhgaicafimchnbdnl"
+ALLOWED_EXTENSION_IDS = (EXTENSION_ID, "ndpogcpncelkickingfpfdbajchdbnim")
 
 
 def state_dir():
@@ -53,7 +54,7 @@ def write_frame(stream, value):
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] != "chrome-extension://" + EXTENSION_ID + "/":
+    if len(sys.argv) < 2 or sys.argv[1] not in {"chrome-extension://" + ident + "/" for ident in ALLOWED_EXTENSION_IDS}:
         raise SystemExit("extension_origin_required")
     os.umask(0o077)
     directory = state_dir()

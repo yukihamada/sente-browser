@@ -13,7 +13,7 @@ import threading
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-EXTENSION_ID = "ndpogcpncelkickingfpfdbajchdbnim"
+EXTENSION_ID = "jnnfblhbdlgofcadhgaicafimchnbdnl"
 
 
 class Fixture(BaseHTTPRequestHandler):
@@ -81,7 +81,13 @@ def main():
             assert result["ok"], result
             assert cli("tabs")["tabs"][0]["tabId"] == tab_id
             popup.reload()
+            popup.wait_for_function("document.querySelectorAll('#tabs li').length===1")
             assert popup.locator("#tabs li").count() == 1
+            if os.environ.get("CAPTURE_STORE"):
+                output = ROOT / "artifacts/store"
+                output.mkdir(parents=True, exist_ok=True)
+                popup.set_viewport_size({"width": 400, "height": 650})
+                popup.locator("body").screenshot(path=str(output / "popup.png"))
             popup.locator(".revoke").click()
             assert cli("read", tab_id, ok=False)["error"] == "tab_not_shared"
             result = popup.evaluate("id => chrome.runtime.sendMessage({type:'grant',tabId:id})", tab_id)

@@ -6,7 +6,7 @@ from pathlib import Path
 import shlex
 import shutil
 import sys
-from host import EXTENSION_ID, state_dir
+from host import EXTENSION_ID, ALLOWED_EXTENSION_IDS, state_dir
 
 
 def main():
@@ -38,7 +38,7 @@ def main():
     launcher.chmod(0o700)
     manifest = {"name": "io.teai.sente_browser", "description": "Sente local browser bridge",
                 "path": str(launcher), "type": "stdio",
-                "allowed_origins": ["chrome-extension://" + EXTENSION_ID + "/"]}
+                "allowed_origins": ["chrome-extension://" + ident + "/" for ident in ALLOWED_EXTENSION_IDS]}
     profiles = [Path.home() / "Library/Application Support/Google/Chrome"]
     profiles.extend(profile.expanduser().resolve() for profile in args.user_data_dir)
     for profile in dict.fromkeys(profiles):

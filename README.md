@@ -55,6 +55,8 @@ tabsで共有タブを確認し、readで最新snapshot/refを取得してくだ
 
 ## 困ったとき / Troubleshooting
 
+- **0.2.1への更新**: ストア発行IDに対応するためブリッジを更新してください。新インストーラーは旧0.2.0拡張のIDも許可します。ストア版の公開は審査によります。
+
 - **接続できない / Bridge unavailable**: `python3 install.py` を再実行。別Chromeが接続中ならそこで停止。拡張ポップアップを開き直す。
 - **専用プロファイル / Custom profile**: `python3 install.py --user-data-dir /path/to/profile`。`chrome://version` のProfile Pathの親フォルダを指定。
 - **共有が消える / Sharing disappeared**: 遷移・更新・拡張再起動で解除する仕様です。対象ページで共有し直す。
